@@ -2,84 +2,163 @@
 
 {% block content %}
 
-<h1 class="text-5xl font-bold text-blue-600">Anonymous Posting App</h1>
+<div class="mx-auto max-w-3xl p-6">
 
-<form method="post" action="{% url 'wall:create_post' %}">
-    {% csrf_token %}
+    <h1 class="mb-2 text-4xl font-bold">
+        Anonymous Posting App
+    </h1>
 
-    {{ form.as_p }}
+    <p class="mb-6 text-gray-600">
+        Share your thoughts anonymously.
+    </p>
 
-    <button type="submit">
-        Post
-    </button>
-</form>
+    <div class="mb-8 rounded-lg border bg-white p-6 shadow">
 
-<hr>
+        <form method="post" action="{% url 'wall:create_post' %}">
+            {% csrf_token %}
 
-{% if posts %}
+            {{ form.as_p }}
 
-    {% for post in posts %}
+            <button
+                type="submit"
+                class="rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700">
 
-        <article>
-            <p>{{ post.content }}</p>
-            <small>{{ post.created_at }}</small>
+                Post
 
-            {% if request.COOKIES.anonymous_owner_id == post.owner_id|stringformat:"s" %}
-                <form method="post" action="{% url 'wall:delete_post' post.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Delete</button>
-                </form>
-            {% endif %}
+            </button>
+        </form>
 
-            <hr>
+    </div>
 
-            <!-- Comments -->
-            <div>
-                <h4>Comments</h4>
+    {% if posts %}
 
-                {% for comment in post.comments.all %}
-                    <div>
-                        <p>{{ comment.content }}</p>
+        {% for post in posts %}
 
-                        <small>{{ comment.created_at }}</small>
+            <article class="mb-6 rounded-lg border bg-white p-5 shadow">
 
-                        {% if request.COOKIES.anonymous_owner_id == comment.owner_id|stringformat:"s" %}
-                            <form method="post" action="{% url 'wall:delete_comment' comment.id %}">
-                                {% csrf_token %}
-                                <button type="submit">
-                                    Delete Comment
-                                </button>
-                            </form>
-                        {% endif %}
-                    </div>
-                {% empty %}
-                    <p>No comments yet.</p>
-                {% endfor %}
+                <p class="mb-3 whitespace-pre-wrap">
+                    {{ post.content }}
+                </p>
 
-                <!-- Comment form oh yeah-->
-                <form method="post" action="{% url 'wall:create_comment' %}">
+                <small class="text-gray-500">
+                    {{ post.created_at }}
+                </small>
+
+                {% if request.COOKIES.anonymous_owner_id == post.owner_id|stringformat:"s" %}
+
+                    <form
+                        method="post"
+                        action="{% url 'wall:delete_post' post.id %}"
+                        class="mt-3">
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="text-sm text-red-600 hover:underline">
+
+                            Delete Post
+
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+                <hr class="my-5">
+
+                <h3 class="mb-3 font-semibold">
+                    Comments
+                </h3>
+
+                <div class="space-y-3">
+
+                    {% for comment in post.comments.all %}
+
+                        <div class="rounded bg-gray-100 p-3">
+
+                            <p>
+                                {{ comment.content }}
+                            </p>
+
+                            <small class="text-gray-500">
+                                {{ comment.created_at }}
+                            </small>
+
+                            {% if request.COOKIES.anonymous_owner_id == comment.owner_id|stringformat:"s" %}
+
+                                <form
+                                    method="post"
+                                    action="{% url 'wall:delete_comment' comment.id %}"
+                                    class="mt-2">
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm text-red-600 hover:underline">
+
+                                        Delete Comment
+
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% empty %}
+
+                        <p class="text-gray-500">
+                            No comments yet.
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+                <form
+                    method="post"
+                    action="{% url 'wall:create_comment' %}"
+                    class="mt-5">
+
                     {% csrf_token %}
 
                     {{ comment_form.content }}
 
-                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    <input
+                        type="hidden"
+                        name="post_id"
+                        value="{{ post.id }}">
 
-                    <button type="submit" name="comment_submit">
+                    <button
+                        type="submit"
+                        name="comment_submit"
+                        class="mt-3 rounded-md bg-gray-800 px-4 py-2 text-white transition hover:bg-gray-900">
+
                         Comment
+
                     </button>
+
                 </form>
-            </div>
 
-        </article>
+            </article>
 
-        <hr>
+        {% endfor %}
 
-    {% endfor %}
+    {% else %}
 
-{% else %}
+        <div class="rounded-lg border bg-white p-6 text-center shadow">
 
-<p>No posts yet.</p>
+            <p class="text-gray-500">
+                No posts yet.
+            </p>
 
-{% endif %}
+        </div>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}
