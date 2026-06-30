@@ -1,0 +1,85 @@
+{% extends 'wall/base.html' %}
+
+{% block content %}
+
+<h1 class="text-5xl font-bold text-blue-600">Anonymous Posting App</h1>
+
+<form method="post" action="{% url 'wall:create_post' %}">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Post
+    </button>
+</form>
+
+<hr>
+
+{% if posts %}
+
+    {% for post in posts %}
+
+        <article>
+            <p>{{ post.content }}</p>
+            <small>{{ post.created_at }}</small>
+
+            {% if request.COOKIES.anonymous_owner_id == post.owner_id|stringformat:"s" %}
+                <form method="post" action="{% url 'wall:delete_post' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            {% endif %}
+
+            <hr>
+
+            <!-- Comments -->
+            <div>
+                <h4>Comments</h4>
+
+                {% for comment in post.comments.all %}
+                    <div>
+                        <p>{{ comment.content }}</p>
+
+                        <small>{{ comment.created_at }}</small>
+
+                        {% if request.COOKIES.anonymous_owner_id == comment.owner_id|stringformat:"s" %}
+                            <form method="post" action="{% url 'wall:delete_comment' comment.id %}">
+                                {% csrf_token %}
+                                <button type="submit">
+                                    Delete Comment
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p>No comments yet.</p>
+                {% endfor %}
+
+                <!-- Comment form oh yeah-->
+                <form method="post" action="{% url 'wall:create_comment' %}">
+                    {% csrf_token %}
+
+                    {{ comment_form.content }}
+
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+
+                    <button type="submit" name="comment_submit">
+                        Comment
+                    </button>
+                </form>
+            </div>
+
+        </article>
+
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+<p>No posts yet.</p>
+
+{% endif %}
+
+{% endblock %}
