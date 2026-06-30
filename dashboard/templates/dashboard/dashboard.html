@@ -1,32 +1,61 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
+<body class="bg-gray-100">
 
-<body>
+    <div class="mx-auto max-w-5xl p-8">
 
-    <h1>Admin Dashboard</h1>
+        <h1 class="mb-8 text-4xl font-bold">
+            Admin Dashboard
+        </h1>
 
-    <hr>
+        <div class="grid gap-6 md:grid-cols-3">
 
-    <h2>Total Posts</h2>
-    <h1>{{ total_posts }}</h1>
+            <div class="rounded-xl bg-white p-6 shadow">
+                <p class="text-sm text-gray-500">
+                    Total Posts
+                </p>
 
-    <hr>
+                <h2 class="mt-2 text-4xl font-bold">
+                    {{ total_posts }}
+                </h2>
+            </div>
 
-    <h2>Posts Today</h2>
-    <h1>{{ posts_today }}</h1>
+            <div class="rounded-xl bg-white p-6 shadow">
+                <p class="text-sm text-gray-500">
+                    Posts Today
+                </p>
 
-    <hr>
+                <h2 class="mt-2 text-4xl font-bold">
+                    {{ posts_today }}
+                </h2>
+            </div>
 
-    <h2>Database</h2>
+            <div class="rounded-xl bg-white p-6 shadow">
+                <p class="text-sm text-gray-500">
+                    Database
+                </p>
 
-    <p>Engine: PostgreSQL</p>
+                <h2 class="mt-2 text-xl font-semibold">
+                    PostgreSQL
+                </h2>
 
-    <p>Size: {{ database_size }}</p>
+                <p class="mt-2 text-gray-600">
+                    {{ database_size }}
+                </p>
+            </div>
+
+        </div>
+
+    </div>
 
 </body>
-
 </html>
